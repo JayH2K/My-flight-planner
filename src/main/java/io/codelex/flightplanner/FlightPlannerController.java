@@ -1,11 +1,15 @@
 package io.codelex.flightplanner;
 
 import io.codelex.flightplanner.Errors.ValidationException;
+import io.codelex.flightplanner.domain.Airport;
 import io.codelex.flightplanner.domain.Flight;
+import io.codelex.flightplanner.page.PageResult;
 import io.codelex.flightplanner.request.AddFlightRequest;
+import io.codelex.flightplanner.request.SearchFlightRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
+import org.springframework.security.core.parameters.P;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
@@ -67,19 +71,19 @@ public class FlightPlannerController {
     }
 
 
-    @DeleteMapping("/admin-api/{flightId}")
-    public HttpStatus deleteFlight(@PathVariable long flightId) {
-        if (flightPlannerService.listFlights().stream().anyMatch(flight -> flight.getId() == flightId)) {
-            flightPlannerService.deleteFlight(flightId);
+    @DeleteMapping("/admin-api/flights/{id}")
+    public HttpStatus deleteFlight(@PathVariable long id) {
+        if (flightPlannerService.listFlights().stream().anyMatch(flight -> flight.getId() == id)) {
+            flightPlannerService.deleteFlight(id);
             return HttpStatus.OK;
         } else {
             return HttpStatus.NOT_FOUND;
         }
     }
 
-    @GetMapping("/admin-api/{flightId}")
-    public Flight fetchFlight(@PathVariable long flightId) {
-       return flightPlannerService.fetchFlight(flightId);
+    @GetMapping("/admin-api/flights/{id}")
+    public Flight fetchFlight(@PathVariable long id) {
+       return flightPlannerService.fetchFlight(id);
     }
 
     @PostMapping("/testing-api/clear")
@@ -87,4 +91,13 @@ public class FlightPlannerController {
         flightPlannerService.clearFlights();
     }
 
+    @GetMapping("/api/airports")
+    public List<Airport> searchAirports(String search) {
+        return flightPlannerService.searchAirports(search);
+    }
+
+    @PostMapping("/api/flights/search")
+    public PageResult<Flight> searchFlights(@RequestBody SearchFlightRequest searchFlightRequest) {
+        return flightPlannerService.searchFlights(searchFlightRequest);
+    }
 }

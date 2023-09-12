@@ -1,7 +1,9 @@
 package io.codelex.flightplanner;
 
+import io.codelex.flightplanner.domain.Airport;
 import io.codelex.flightplanner.domain.Flight;
-import io.codelex.flightplanner.request.AddFlightRequest;
+import io.codelex.flightplanner.page.PageResult;
+import io.codelex.flightplanner.request.SearchFlightRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
@@ -43,4 +45,32 @@ public class FlightRepository {
         }
     }
 
+    public List<Airport> searchAirports(String search) {
+        List<Airport> found = new ArrayList<>();
+        for (Flight x : flightList
+        ) {
+            if (x.getFrom().toString().toLowerCase().contains(search.toLowerCase().trim())) {
+                found.add(x.getFrom());
+            }
+            if (x.getTo().toString().toLowerCase().contains(search.toLowerCase().trim())) {
+                found.add(x.getTo());
+            }
+        }
+        return found;
+    }
+
+    public PageResult<Flight> searchFlights(SearchFlightRequest searchFlightRequest) {
+        List<Flight> matchedFlights = new ArrayList<>();
+        for (Flight x : flightList
+             ) {
+            if (x.getFrom().getAirport().matches(searchFlightRequest.getFrom())) {
+                if (x.getTo().getAirport().matches(searchFlightRequest.getTo())) {
+                    if (x.getDepartureTime().isAfter(searchFlightRequest.getDepartureDate().atStartOfDay())) {
+                        matchedFlights.add(x);
+                    }
+                }
+            }
+        }
+        return new PageResult<>(0,0,matchedFlights);
+    }
 }

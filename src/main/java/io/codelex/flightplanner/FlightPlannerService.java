@@ -48,4 +48,8 @@ public class FlightPlannerService {
     public PageResult<Flight> searchFlights(SearchFlightRequest searchFlightRequest) {
         return flightRepository.searchFlights(searchFlightRequest);
     }
+
+    public Flight findFlightById(String id) {
+        return flightRepository.findFlightById(id);
+    }
 }

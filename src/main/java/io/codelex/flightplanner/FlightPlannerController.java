@@ -96,8 +96,19 @@ public class FlightPlannerController {
         return flightPlannerService.searchAirports(search);
     }
 
+    @GetMapping("/api/flights/{id}")
+    public Flight findFlightById(@PathVariable String id) {
+        if (id == null) {
+            throw new ResponseStatusException(HttpStatus.valueOf(400));
+        }
+        return flightPlannerService.findFlightById(id);
+    }
+
     @PostMapping("/api/flights/search")
-    public PageResult<Flight> searchFlights(@RequestBody SearchFlightRequest searchFlightRequest) {
+    public PageResult<Flight> searchFlights(@RequestBody @Valid SearchFlightRequest searchFlightRequest, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            throw new ResponseStatusException(HttpStatus.valueOf(400));
+        }
         return flightPlannerService.searchFlights(searchFlightRequest);
     }
 }

@@ -1,16 +1,21 @@
 package io.codelex.flightplanner.request;
 
 import io.codelex.flightplanner.domain.Airport;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class SearchFlightRequest {
 
+    @NotBlank
     String from;
 
+    @NotBlank
     String to;
 
+    @NotNull
     LocalDate departureDate;
 
     public SearchFlightRequest() {

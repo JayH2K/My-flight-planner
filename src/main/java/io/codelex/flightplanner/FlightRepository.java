@@ -11,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class FlightRepository {
@@ -72,5 +73,16 @@ public class FlightRepository {
             }
         }
         return new PageResult<>(0,0,matchedFlights);
+    }
+
+    public Flight findFlightById(String id) {
+        Optional<Flight> foundFlight = flightList.stream()
+                .filter(flight -> flight.getId() == Long.parseLong(id))
+                .findFirst();
+        if (foundFlight.isPresent()) {
+            return foundFlight.get();
+        } else {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
     }
 }

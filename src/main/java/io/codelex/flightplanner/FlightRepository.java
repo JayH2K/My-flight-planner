@@ -5,6 +5,7 @@ import io.codelex.flightplanner.domain.Flight;
 import io.codelex.flightplanner.page.PageResult;
 import io.codelex.flightplanner.request.SearchFlightRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -61,6 +62,9 @@ public class FlightRepository {
     }
 
     public PageResult<Flight> searchFlights(SearchFlightRequest searchFlightRequest) {
+        if (searchFlightRequest.getFrom().matches(searchFlightRequest.getTo())) {
+            throw new ResponseStatusException(HttpStatusCode.valueOf(400));
+    }
         List<Flight> matchedFlights = new ArrayList<>();
         for (Flight x : flightList
              ) {

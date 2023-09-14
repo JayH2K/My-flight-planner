@@ -17,7 +17,7 @@ public class FlightPlannerService {
 
     long currentId = 10;
 
-    FlightRepository flightRepository;
+    private FlightRepository flightRepository;
 
     public FlightPlannerService(FlightRepository flightRepository) {
         this.flightRepository = flightRepository;
@@ -47,7 +47,7 @@ public class FlightPlannerService {
         flightRepository.clearFlights();
     }
 
-    public synchronized List<Flight> listFlights()
+    public List<Flight> listFlights()
     {
         return flightRepository.listFlights();
     }
@@ -61,7 +61,7 @@ public class FlightPlannerService {
         }
     }
 
-    public synchronized Flight fetchFlight(long flightId) {
+    public Flight fetchFlight(long flightId) {
         return flightRepository.fetchFlight(flightId);
     }
 

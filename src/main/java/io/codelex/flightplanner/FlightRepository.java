@@ -18,7 +18,7 @@ public class FlightRepository {
 
     private ArrayList<Flight> flightList = new ArrayList<>();
 
-    public void addFlight(Flight flight) {
+    public synchronized void addFlight(Flight flight) {
         this.flightList.add(flight);
     }
 
@@ -26,11 +26,11 @@ public class FlightRepository {
         return this.flightList;
     }
 
-    public void clearFlights() {
+    public synchronized void clearFlights() {
         flightList.clear();
     }
 
-    public void deleteFlight(long flightId) {
+    public synchronized void deleteFlight(long flightId) {
         flightList.removeIf(flight -> flight.getId() == flightId);
     }
 

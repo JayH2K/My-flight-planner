@@ -17,10 +17,8 @@ import java.util.Random;
 
 @RestController
 public class FlightPlannerController {
-    Random r = new Random();
 
-
-    FlightPlannerService flightPlannerService;
+    private FlightPlannerService flightPlannerService;
 
     public FlightPlannerController(FlightPlannerService flightPlannerService) {
         this.flightPlannerService = flightPlannerService;

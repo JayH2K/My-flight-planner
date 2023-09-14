@@ -12,12 +12,11 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Repository
 public class FlightRepository {
 
-    ArrayList<Flight> flightList = new ArrayList<>();
+    private ArrayList<Flight> flightList = new ArrayList<>();
 
     public void addFlight(Flight flight) {
         this.flightList.add(flight);
@@ -39,12 +38,7 @@ public class FlightRepository {
         Optional<Flight> foundFlight = flightList.stream()
                 .filter(flight -> flight.getId() == flightId)
                 .findFirst();
-
-        if (foundFlight.isPresent()) {
-            return foundFlight.get();
-        } else {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
-        }
+        return foundFlight.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     public List<Airport> searchAirports(String search) {
@@ -79,9 +73,9 @@ public class FlightRepository {
         return new PageResult<>(0,0,matchedFlights);
     }
 
-    public Flight findFlightById(String id) {
+    public Flight findFlightById(Long id) {
         Optional<Flight> foundFlight = flightList.stream()
-                .filter(flight -> flight.getId() == Long.parseLong(id))
+                .filter(flight -> flight.getId() == id)
                 .findFirst();
         if (foundFlight.isPresent()) {
             return foundFlight.get();

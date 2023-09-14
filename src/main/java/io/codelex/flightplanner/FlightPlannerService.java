@@ -4,12 +4,12 @@ import io.codelex.flightplanner.domain.Airport;
 import io.codelex.flightplanner.domain.Flight;
 import io.codelex.flightplanner.page.PageResult;
 import io.codelex.flightplanner.request.SearchFlightRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 
-@Validated
 @Service
 public class FlightPlannerService {
 
@@ -32,8 +32,13 @@ public class FlightPlannerService {
         return flightRepository.listFlights();
     }
 
-    public synchronized void deleteFlight(long flightId) {
-        flightRepository.deleteFlight(flightId);
+    public synchronized HttpStatus deleteFlight(long flightId) {
+        if (flightRepository.listFlights().stream().anyMatch(flight -> flight.getId() == flightId)) {
+            flightRepository.deleteFlight(flightId);
+            return HttpStatus.OK;
+        } else {
+            return HttpStatus.NOT_FOUND;
+        }
     }
 
     public synchronized Flight fetchFlight(long flightId) {
@@ -49,7 +54,7 @@ public class FlightPlannerService {
         return flightRepository.searchFlights(searchFlightRequest);
     }
 
-    public Flight findFlightById(String id) {
+    public Flight findFlightById(Long id) {
         return flightRepository.findFlightById(id);
     }
 }

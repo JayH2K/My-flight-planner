@@ -15,8 +15,6 @@ import java.util.Objects;
 import java.util.Random;
 
 public class Flight {
-    Random r = new Random();
-
     private long id;
 
     @NotBlank

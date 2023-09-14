@@ -3,15 +3,19 @@ package io.codelex.flightplanner;
 import io.codelex.flightplanner.domain.Airport;
 import io.codelex.flightplanner.domain.Flight;
 import io.codelex.flightplanner.page.PageResult;
+import io.codelex.flightplanner.request.AddFlightRequest;
 import io.codelex.flightplanner.request.SearchFlightRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Service
 public class FlightPlannerService {
+
+    long currentId = 10;
 
     FlightRepository flightRepository;
 
@@ -19,8 +23,24 @@ public class FlightPlannerService {
         this.flightRepository = flightRepository;
     }
 
-    public synchronized void addFlight(Flight flight) {
+    public synchronized Flight addFlight(AddFlightRequest request) {
+        long newId = currentId;
+        currentId++;
+        //Creating flight
+        Flight flight = new Flight(request.getFrom(), request.getTo(), request.getCarrier(), request.getDepartureTime(), request.getArrivalTime(),newId);
+        //Error handling
+        if (listFlights().stream().anyMatch(flight::equals)) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT);
+        }
+        if (flight.hasSameAirports()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        if (flight.getDepartureTime().isAfter(flight.getArrivalTime()) || flight.getDepartureTime().isEqual(flight.getArrivalTime())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+        //Adding and returning flight
         flightRepository.addFlight(flight);
+        return flight;
     }
 
     public synchronized void clearFlights() {

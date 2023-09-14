@@ -19,7 +19,6 @@ import java.util.Random;
 public class FlightPlannerController {
     Random r = new Random();
 
-    long lastId = 10;
 
     FlightPlannerService flightPlannerService;
 
@@ -33,24 +32,8 @@ public class FlightPlannerController {
         if (bindingResult.hasErrors()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
         }
-        //Generating new id
-        Long newId = lastId;
-        lastId++;
-        //Creating flight
-        Flight flight = new Flight(request.getFrom(), request.getTo(), request.getCarrier(), request.getDepartureTime(), request.getArrivalTime(),newId);
-        //Error handling
-        if (flightPlannerService.listFlights().stream().anyMatch(flight::equals)) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT);
-        }
-        if (flight.hasSameAirports()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        if (flight.getDepartureTime().isAfter(flight.getArrivalTime()) || flight.getDepartureTime().isEqual(flight.getArrivalTime())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
-        }
-        //Adding and returning flight
-        flightPlannerService.addFlight(flight);
-        return flight;
+        return flightPlannerService.addFlight(request);
+
     }
 
 

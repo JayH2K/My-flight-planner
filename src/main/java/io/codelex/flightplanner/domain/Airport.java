@@ -1,11 +1,18 @@
 package io.codelex.flightplanner.domain;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.Objects;
 
+@Entity
+@Table(name="airports")
 public class Airport {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
     @NotBlank
     private String country;
@@ -20,6 +27,9 @@ public class Airport {
         this.country = country;
         this.city = city;
         this.airport = airport;
+    }
+
+    public Airport() {
     }
 
     public String getCountry() {

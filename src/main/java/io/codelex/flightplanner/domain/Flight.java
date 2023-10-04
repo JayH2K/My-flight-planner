@@ -1,42 +1,49 @@
 package io.codelex.flightplanner.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.Valid;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.lang.NonNull;
+import org.hibernate.annotations.Cascade;
 
-
-import java.text.DateFormat;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-import java.util.Random;
 
+
+@Entity
+@Table(name = "flights")
 public class Flight {
-    private long id;
 
-    @NotBlank
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @NotNull
+    @ManyToOne
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Airport from;
 
-    @NotBlank
+    @NotNull
+    @ManyToOne
+    @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Airport to;
 
+    @Column(name = "carrier", columnDefinition = "VARCHAR(255)")
     @NotBlank
     private String carrier;
 
+    @Column(name = "departure_time", columnDefinition = "VARCHAR(255)")
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime departureTime;
 
+    @Column(name = "arrival_time", columnDefinition = "VARCHAR(255)")
     @NotNull
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime arrivalTime;
 
 
-    public Flight(Airport from, Airport to, String carrier, LocalDateTime departureTime, LocalDateTime arrivalTime, Long id) {
-        this.id = id;
+    public Flight(Airport from, Airport to, String carrier, LocalDateTime departureTime, LocalDateTime arrivalTime) {
         this.from = from;
         this.to = to;
         this.carrier = carrier;
@@ -44,11 +51,14 @@ public class Flight {
         this.arrivalTime = arrivalTime;
     }
 
+    public Flight() {
+    }
+
     public long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

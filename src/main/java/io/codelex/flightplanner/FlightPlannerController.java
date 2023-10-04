@@ -6,6 +6,7 @@ import io.codelex.flightplanner.page.PageResult;
 import io.codelex.flightplanner.request.AddFlightRequest;
 import io.codelex.flightplanner.request.SearchFlightRequest;
 import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,7 +14,6 @@ import org.springframework.validation.BindingResult;
 
 import java.text.ParseException;
 import java.util.List;
-import java.util.Random;
 
 @RestController
 public class FlightPlannerController {
@@ -36,13 +36,13 @@ public class FlightPlannerController {
 
 
     @DeleteMapping("/admin-api/flights/{id}")
-    public HttpStatus deleteFlight(@PathVariable long id) {
-        return flightPlannerService.deleteFlight(id);
+    public void deleteFlight(@PathVariable int id) {
+        flightPlannerService.deleteFlight(id);
     }
 
     @GetMapping("/admin-api/flights/{id}")
-    public Flight fetchFlight(@PathVariable long id) {
-       return flightPlannerService.fetchFlight(id);
+    public Flight fetchFlight(@PathVariable int id) {
+        return flightPlannerService.fetchFlight(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/testing-api/clear")
@@ -56,8 +56,8 @@ public class FlightPlannerController {
     }
 
     @GetMapping("/api/flights/{id}")
-    public Flight findFlightById(@PathVariable Long id) {
-        return flightPlannerService.fetchFlight(id);
+    public Flight findFlightById(@PathVariable int id) {
+        return flightPlannerService.fetchFlight(id).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/api/flights/search")

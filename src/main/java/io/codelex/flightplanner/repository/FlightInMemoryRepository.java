@@ -1,4 +1,4 @@
-package io.codelex.flightplanner;
+package io.codelex.flightplanner.repository;
 
 import io.codelex.flightplanner.domain.Airport;
 import io.codelex.flightplanner.domain.Flight;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class FlightRepository {
+public class FlightInMemoryRepository {
 
     private ArrayList<Flight> flightList = new ArrayList<>();
 
@@ -30,11 +30,11 @@ public class FlightRepository {
         flightList.clear();
     }
 
-    public synchronized void deleteFlight(long flightId) {
+    public synchronized void deleteFlight(int flightId) {
         flightList.removeIf(flight -> flight.getId() == flightId);
     }
 
-    public Flight fetchFlight(long flightId) {
+    public Flight fetchFlight(int flightId) {
         Optional<Flight> foundFlight = flightList.stream()
                 .filter(flight -> flight.getId() == flightId)
                 .findFirst();
@@ -70,10 +70,10 @@ public class FlightRepository {
                 }
             }
         }
-        return new PageResult<>(0,0,matchedFlights);
+        return new PageResult<>(0,matchedFlights.size(),matchedFlights);
     }
 
-    public Flight findFlightById(Long id) {
+    public Flight findFlightById(int id) {
         Optional<Flight> foundFlight = flightList.stream()
                 .filter(flight -> flight.getId() == id)
                 .findFirst();
